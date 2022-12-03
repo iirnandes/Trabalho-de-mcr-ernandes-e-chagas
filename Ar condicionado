@@ -20,6 +20,9 @@ azul e se estiver acima de 30° acenderá um led vermelho, também foi
 feito um ar condicionado simulado por leds e uma oled onde mostrava dava 
 temperatura do ambiente.
 
+Projeto no wokwi:
+https://wokwi.com/projects/349306904447550035
+
 Código do projeto;
 display.setCursor (0, 0);
   display.print("Desligado");
