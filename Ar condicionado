@@ -19,3 +19,166 @@ Do ambiente, se a temperatura estiver abaixo de 30° ira acender um led
 azul e se estiver acima de 30° acenderá um led vermelho, também foi 
 feito um ar condicionado simulado por leds e uma oled onde mostrava dava 
 temperatura do ambiente.
+
+Código do projeto;
+display.setCursor (0, 0);
+  display.print("Desligado");
+  display.display();
+  display.clearDisplay ();
+
+  }
+
+  if (digitalRead (LED_RED_AR) == 1 && digitalRead(LED_BLUE_AR) == 0)
+  {
+     display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor (0, 0);
+  display.print("Temperatura do Ar:");
+  display.setCursor (0, 25);
+  display.print("Quente");
+  display.display();
+  display.clearDisplay ();
+  
+  }
+  if (digitalRead(LED_RED_AR) == 0 && digitalRead(LED_BLUE_AR) ==1)
+  {
+    display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor (0, 0);
+  display.print("Temperatura do Ar:");
+  display.setCursor(0, 25);
+  display.print("Frio");
+  display.display();
+  display.clearDisplay();
+  }
+}
+
+
+```
+
+codigo do sensor ;
+
+```
+#include <ETH.h>
+#include <WiFi.h>
+#include <WiFiAP.h>
+#include <WiFiClient.h>
+#include <WiFiGeneric.h>
+#include <WiFiMulti.h>
+#include <WiFiScan.h>
+#include <WiFiServer.h>
+#include <WiFiSTA.h>
+#include <WiFiType.h>
+#include <WiFiUdp.h>
+
+#define BLYNK_TEMPLATE_ID "TMPLXv32XE1T"
+#define BLYNK_DEVICE_NAME "Trabalho Chaves"
+#define BLYNK_AUTH_TOKEN "a_O2uRxhzY8bajBGcPVZb-PA_v3B5fHa"
+#define BLYNK_PRINT Serial
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+
+#include "WiFi.h"
+#include "WiFiClient.h"
+#include "BlynkSimpleEsp32.h"
+///////////////////////////
+char auth [] = BLYNK_AUTH_TOKEN;
+char ssid [] = "Gabriel_2.4";
+char pass [] = "gabriel10";
+
+#define SCREEN_WIDTH 128 // largura da tela OLED, em pixels
+#define SCREEN_HEIGHT 64 // Altura da tela OLED, em pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+BlynkTimer timer;
+#define DHTPIN 14 
+#define LED_BLUE 15
+#define LED_RED 16     
+
+#define DHTTYPE    DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  
+ pinMode(16, OUTPUT);
+ pinMode(15, OUTPUT);
+  
+
+  Blynk.begin (auth, ssid, pass);  
+  
+
+
+  Serial.begin(115200);
+
+  dht.begin();
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("Falha na alocação SSD1306"));
+    for(;;);
+  }
+  delay(2000);
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+}
+
+void loop() {
+
+Blynk.run ();
+  timer.run ();
+   
+  delay(5000);
+
+  // ler temperatura e umidade
+  float t = dht.readTemperature();
+  float h = dht.readHumidity();
+  if (isnan(h) || isnan(t)) {
+     Serial.println("Falha ao ler o sensor DHT!");
+  }
+  Blynk.virtualWrite (V5, t);
+  Blynk.virtualWrite (V4, h);
+  // exibição clara
+  display.clearDisplay();
+  
+  // temperatura de exibição
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.print("Temperatura: ");
+  display.setTextSize(2);
+  display.setCursor(0,10);
+  display.print(t);
+  display.print(" ");
+  display.setTextSize(1);
+  display.cp437(true);
+  display.write(167);
+  display.setTextSize(2);
+  display.print("C");
+  
+  // exibir umidade
+  display.setTextSize(1);
+  display.setCursor(0, 35);
+  display.print("Umidade: ");
+  display.setTextSize(2);
+  display.setCursor(0, 45);
+  display.print(h);
+  display.print(" %"); 
+  
+  display.display(); 
+
+  if (t >= 30.0) {
+    digitalWrite(LED_BLUE, LOW);
+    digitalWrite(LED_RED, HIGH);
+  }
+  if (t <= 29.95) {
+    digitalWrite(LED_RED, LOW);
+    digitalWrite(LED_BLUE, HIGH);
+
+  }
+
+}
+
+```
