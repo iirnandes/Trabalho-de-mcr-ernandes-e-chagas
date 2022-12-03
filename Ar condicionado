@@ -1,0 +1,21 @@
+# Trabalho de microcontroladores 
+4° bimestre
+
+#Ernandes Lopes de Carvalho
+#Gabriel Chagas de Andrade
+
+Componentes utilizados
+Esp32
+DHT
+Resistores
+Leds
+Protoboard
+Jumpers
+Display oled
+
+Foi feito;
+Fizemos um aparelho com sensor DHT que quando ligado mede a temperatura
+Do ambiente, se a temperatura estiver abaixo de 30° ira acender um led 
+azul e se estiver acima de 30° acenderá um led vermelho, também foi 
+feito um ar condicionado simulado por leds e uma oled onde mostrava dava 
+temperatura do ambiente.
